@@ -43,10 +43,7 @@ const HalamanIupUgm = () => {
           content="bimbel iup ugm, les privat iup ugm, persiapan gmst ugm, pelatihan acept ugm, bimbel iup kedokteran, tutor privat iup ugm, intake iup ugm, Bimbel LPS"
         />
 
-        <link
-          rel="canonical"
-          href="https://supercampmatrix.co.id/bimbel-iup-ugm"
-        />
+        <link rel="canonical" href="https://supercampui.com/bimbel-iup-ugm" />
 
         {/* Open Graph (WhatsApp Preview Premium) */}
         <meta property="og:type" content="website" />
@@ -60,11 +57,11 @@ const HalamanIupUgm = () => {
         />
         <meta
           property="og:url"
-          content="https://supercampmatrix.co.id/bimbel-iup-ugm"
+          content="https://supercampui.com/bimbel-iup-ugm"
         />
         <meta
           property="og:image"
-          content="https://supercampmatrix.co.id/images/banner.webp"
+          content="https://supercampui.com/images/banner.webp"
         />
 
         {/* Schema Markup JSON-LD: Menampilkan program sebagai layanan profesional untuk Rich Snippets */}
@@ -78,7 +75,7 @@ const HalamanIupUgm = () => {
               provider: {
                 "@type": "EducationalOrganization",
                 name: "Bimbel LPS",
-                url: "https://supercampmatrix.co.id",
+                url: "https://supercampui.com",
               },
               description:
                 "Bimbingan belajar khusus persiapan masuk IUP UGM mencakup GMST, AcEPT, dan Interview.",
