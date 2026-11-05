@@ -1,7 +1,5 @@
-import axios from "axios";
-import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import AlumniKedokteranLps from "../../Components/AlumniKedokteranLps/AlumniKedokteranLps";
 import AlumniPtnLps from "../../Components/AlumniPTNLPS/AlumniPTNLPS";
 import BenefitScLps from "../../Components/BenefitScLPS/BenefitScLPS";
@@ -24,102 +22,112 @@ import TutorLpsSc from "../../Components/TutorLpsSc/TutorLpsSc";
 import VenueScLps from "../../Components/VenueScLps/VenueScLps";
 import VideoScLps from "../../Components/VideoScLps/VideoScLps";
 import WaktuPelaksanaanSc from "../../Components/WaktuPelaksanaanSc/WaktuPelaksanaanSc";
+import { DOMAIN } from "../../utils/domain";
+import formatNamaWilayah from "../../utils/formatNamaWilayah";
 
 const HalamanKelSimakUi = () => {
+  // =========================================
+  // AMBIL SLUG KELURAHAN DARI URL
+  // =========================================
   const { kelSlug } = useParams();
-  const [kelurahan, setKelurahan] = useState([]);
 
-  function useQuery() {
-    const { search } = useLocation();
-    return useMemo(() => new URLSearchParams(search), [search]);
-  }
+  // =========================================
+  // FORMAT NAMA KELURAHAN
+  // =========================================
+  const namaKelurahan = formatNamaWilayah(kelSlug);
 
-  const query = useQuery();
+  // =========================================
+  // CANONICAL URL
+  // =========================================
+  const slugKelurahan = String(kelSlug || "")
+    .trim()
+    .toLowerCase();
 
-  useEffect(() => {
-    const axiosJWT = axios.create();
-    const getKelurahan = async () => {
-      const response = await axiosJWT.get(
-        `https://apilps.edusmart-indonesia.com/kelurahankec/${kelSlug}`,
-        {
-          headers: {
-            Authorization: `Bearer`,
-          },
-        },
-      );
-      setKelurahan(response.data);
-    };
-    getKelurahan(kelSlug);
-  }, [kelSlug, query]);
+  const canonicalUrl = `${DOMAIN}/guru-les-privat-simak-ui/${encodeURIComponent(slugKelurahan)}`;
+
+  // =========================================
+  // SEO METADATA
+  // =========================================
+  const pageTitle = `Bimbel SIMAK UI ${namaKelurahan} | Les Privat Masuk UI`;
+
+  const pageDescription = `Persiapan SIMAK UI untuk siswa di ${namaKelurahan} bersama Bimbel Supercamp. Program les privat intensif, latihan soal, dan pendampingan seleksi masuk Universitas Indonesia.`;
+
+  // =========================================
+  // STRUCTURED DATA
+  // =========================================
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: pageTitle,
+    description: pageDescription,
+    url: canonicalUrl,
+    inLanguage: "id-ID",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Bimbel Supercamp",
+      url: `${DOMAIN}/`,
+    },
+  };
+
   return (
     <>
+      {/* ===================================== */}
+      {/* SEO METADATA */}
+      {/* ===================================== */}
       <Helmet>
-        {/* Fix Title: Menggunakan satu string utuh agar aman dari error Helmet */}
-        <title>{`Bimbel & Les Privat SIMAK UI ${kelurahan.kelurahan} 2026 - Lolos UI #1`}</title>
+        <title>{pageTitle}</title>
 
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content={pageDescription} />
 
-        {/* Meta Description: Hybrid Keyword + Target SIMAK UI & KKI + Lokasi Kelurahan Spesifik */}
-        <meta
-          name="description"
-          content={`Bimbel & Les Privat SIMAK UI terbaik di ${kelurahan.kelurahan}. Program intensif lulus SIMAK UI Reguler & KKI (International Class). Master Teacher ke rumah wilayah ${kelurahan.kelurahan}. Daftar sekarang di Edumatrix!`}
-        />
-        <meta
-          name="keywords"
-          content={`bimbel simak ui ${kelurahan.kelurahan}, les privat simak ui ${kelurahan.kelurahan}, persiapan simak kki ${kelurahan.kelurahan}, guru privat ui ke rumah, bimbingan belajar simak ui, Bimbel LPS`}
-        />
+        <link rel="canonical" href={canonicalUrl} />
 
-        <link
-          rel="canonical"
-          href={`https://supercampui.com/guru-les-privat-simak-ui/${kelurahan.slug}`}
-        />
+        <meta name="robots" content="index, follow" />
 
-        {/* Open Graph (Optimal untuk WhatsApp Preview) */}
+        {/* ===================================== */}
+        {/* OPEN GRAPH */}
+        {/* ===================================== */}
         <meta property="og:type" content="website" />
-        <meta
-          property="og:title"
-          content={`Bimbel & Les Privat SIMAK UI di ${kelurahan.kelurahan} - Bimbel LPS`}
-        />
-        <meta
-          property="og:description"
-          content={`Raih kursi Universitas Indonesia (Reguler & KKI) bersama spesialis Bimbel & Les Privat di kelurahan ${kelurahan.kelurahan}.`}
-        />
-        <meta
-          property="og:url"
-          content={`https://supercampui.com/guru-les-privat-simak-ui/${kelurahan.slug}`}
-        />
-        <meta
-          property="og:image"
-          content="https://supercampui.com/images/banner.webp"
-        />
 
-        {/* Schema Markup JSON-LD: Sangat kuat untuk SEO Lokal tingkat Kelurahan */}
+        <meta property="og:site_name" content="Bimbel Supercamp" />
+
+        <meta property="og:title" content={pageTitle} />
+
+        <meta property="og:description" content={pageDescription} />
+
+        <meta property="og:url" content={canonicalUrl} />
+
+        <meta property="og:image" content={`${DOMAIN}/images/banner.webp`} />
+
+        <meta property="og:locale" content="id_ID" />
+
+        {/* ===================================== */}
+        {/* TWITTER CARD */}
+        {/* ===================================== */}
+        <meta name="twitter:card" content="summary_large_image" />
+
+        <meta name="twitter:title" content={pageTitle} />
+
+        <meta name="twitter:description" content={pageDescription} />
+
+        <meta name="twitter:image" content={`${DOMAIN}/images/banner.webp`} />
+
+        {/* ===================================== */}
+        {/* JSON-LD */}
+        {/* ===================================== */}
         <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "EducationalOrganization",
-            name: `Bimbel & Les Privat SIMAK UI Edumatrix ${kelurahan.kelurahan}`,
-            image: "https://supercampui.com/images/banner.webp",
-            url: `https://supercampui.com/guru-les-privat-simak-ui/${kelurahan.slug}`,
-            address: {
-              "@type": "PostalAddress",
-              addressLocality: kelurahan.kelurahan,
-              addressCountry: "ID",
-            },
-            description: `Layanan Bimbel dan Les Privat spesialis persiapan SIMAK UI dan Kelas Internasional (KKI) untuk wilayah kelurahan ${kelurahan.kelurahan}.`,
-          })}
+          {JSON.stringify(structuredData)}
         </script>
       </Helmet>
+
       <JumbotronLps />
       <div className="parent-text-seo-lps">
         <h1 className="text-seo-lps">
-          Bimbel & Les Privat Simak UI {kelurahan.kelurahan} - Intensif Privat
-          Program Simak UI dan Kelas Internasional
+          Bimbel & Les Privat Simak UI {namaKelurahan} - Intensif Privat Program
+          Simak UI dan Kelas Internasional
         </h1>
         <p className="desk-seo-lps">
-          Bimbel & Les Privat Simak UI {kelurahan.kelurahan} - Program Belajar
-          Les Privat Simak UI dan Simak KKI, Modul Simak UI, Drilling Soal,
+          Bimbel & Les Privat Simak UI {namaKelurahan} - Program Belajar Les
+          Privat Simak UI dan Simak KKI, Modul Simak UI, Drilling Soal,
           Konsultasi Jurusan, Try Out Simak UI, Belajar All Subtes Simak UI dan
           KKI, Offline dan Online
         </p>

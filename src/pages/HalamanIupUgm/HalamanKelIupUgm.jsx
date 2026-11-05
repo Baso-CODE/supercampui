@@ -1,7 +1,5 @@
-import axios from "axios";
-import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import AlumniKedokteranLps from "../../Components/AlumniKedokteranLps/AlumniKedokteranLps";
 import AlumniPtnLps from "../../Components/AlumniPTNLPS/AlumniPTNLPS";
 import BenefitScLps from "../../Components/BenefitScLPS/BenefitScLPS";
@@ -24,104 +22,111 @@ import TutorLpsSc from "../../Components/TutorLpsSc/TutorLpsSc";
 import VenueScLps from "../../Components/VenueScLps/VenueScLps";
 import VideoScLps from "../../Components/VideoScLps/VideoScLps";
 import WaktuPelaksanaanSc from "../../Components/WaktuPelaksanaanSc/WaktuPelaksanaanSc";
+import { DOMAIN } from "../../utils/domain";
+import formatNamaWilayah from "../../utils/formatNamaWilayah";
 
 const HalamanKelIupUgm = () => {
+  // =========================================
+  // AMBIL SLUG KELURAHAN DARI URL
+  // =========================================
   const { kelSlug } = useParams();
-  const [kelurahan, setKelurahan] = useState([]);
 
-  function useQuery() {
-    const { search } = useLocation();
-    return useMemo(() => new URLSearchParams(search), [search]);
-  }
+  // =========================================
+  // FORMAT NAMA KELURAHAN
+  // =========================================
+  const namaKelurahan = formatNamaWilayah(kelSlug);
 
-  const query = useQuery();
+  // =========================================
+  // CANONICAL URL
+  // =========================================
+  const slugKelurahan = String(kelSlug || "")
+    .trim()
+    .toLowerCase();
 
-  useEffect(() => {
-    const axiosJWT = axios.create();
-    const getKelurahan = async () => {
-      const response = await axiosJWT.get(
-        `https://apilps.edusmart-indonesia.com/kelurahankec/${kelSlug}`,
-        {
-          headers: {
-            Authorization: `Bearer`,
-          },
-        },
-      );
-      setKelurahan(response.data);
-    };
-    getKelurahan(kelSlug);
-  }, [kelSlug, query]);
+  const canonicalUrl = `${DOMAIN}/bimbingan-privat-iup-ugm/${encodeURIComponent(slugKelurahan)}`;
+
+  // =========================================
+  // SEO METADATA
+  // =========================================
+  const pageTitle = `Bimbel IUP UGM ${namaKelurahan} | Les Privat & Persiapan Seleksi`;
+
+  const pageDescription = `Persiapan seleksi IUP UGM untuk siswa di ${namaKelurahan} bersama Bimbel Supercamp. Program les privat intensif, latihan soal, dan pendampingan untuk International Undergraduate Program UGM.`;
+
+  // =========================================
+  // STRUCTURED DATA
+  // =========================================
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: pageTitle,
+    description: pageDescription,
+    url: canonicalUrl,
+    inLanguage: "id-ID",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Bimbel Supercamp",
+      url: `${DOMAIN}/`,
+    },
+  };
+
   return (
     <>
+      {/* ===================================== */}
+      {/* SEO METADATA */}
+      {/* ===================================== */}
       <Helmet>
-        {/* Fix Title: Menggunakan satu string utuh agar aman dari error Helmet */}
-        <title>{`Bimbel & Les Privat IUP UGM ${kelurahan.kelurahan} 2026 - Lolos Intake #1`}</title>
+        <title>{pageTitle}</title>
 
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content={pageDescription} />
 
-        {/* Meta Description: Hybrid Keyword + Target Teknis (GMST/AcEPT) + Lokasi Kelurahan Spesifik */}
-        <meta
-          name="description"
-          content={`Bimbel & Les Privat IUP UGM terbaik di ${kelurahan.kelurahan}. Persiapan intensif GMST, AcEPT, & Interview spesialis lulus FK & Non-FK. Guru privat datang ke rumah di wilayah ${kelurahan.kelurahan}. Program Intake 1, 2, & 3. Daftar Sekarang!`}
-        />
-        <meta
-          name="keywords"
-          content={`bimbel iup ugm ${kelurahan.kelurahan}, les privat iup ugm ${kelurahan.kelurahan}, persiapan gmst ${kelurahan.kelurahan}, pelatihan acept ugm, bimbel iup kedokteran, guru privat iup ugm, Bimbel LPS`}
-        />
+        <link rel="canonical" href={canonicalUrl} />
 
-        {/* Canonical Link */}
-        <link
-          rel="canonical"
-          href={`https://supercampui.com/bimbingan-privat-iup-ugm/${kelurahan.slug}`}
-        />
+        <meta name="robots" content="index, follow" />
 
-        {/* Open Graph (WhatsApp Preview Premium) */}
+        {/* ===================================== */}
+        {/* OPEN GRAPH */}
+        {/* ===================================== */}
         <meta property="og:type" content="website" />
-        <meta
-          property="og:title"
-          content={`Bimbel & Les Privat IUP UGM di ${kelurahan.kelurahan} - Bimbel LPS`}
-        />
-        <meta
-          property="og:description"
-          content={`Raih kursi International Undergraduate Program (IUP) UGM melalui bimbingan spesialis di kelurahan ${kelurahan.kelurahan}.`}
-        />
-        <meta
-          property="og:url"
-          content={`https://supercampui.com/bimbingan-privat-iup-ugm/${kelurahan.slug}`}
-        />
-        <meta
-          property="og:image"
-          content="https://supercampui.com/images/banner.webp"
-        />
 
-        {/* Schema Markup JSON-LD: Spek Tinggi untuk mendominasi Google Search Lokal */}
+        <meta property="og:site_name" content="Bimbel Supercamp" />
+
+        <meta property="og:title" content={pageTitle} />
+
+        <meta property="og:description" content={pageDescription} />
+
+        <meta property="og:url" content={canonicalUrl} />
+
+        <meta property="og:image" content={`${DOMAIN}/images/banner.webp`} />
+
+        <meta property="og:locale" content="id_ID" />
+
+        {/* ===================================== */}
+        {/* TWITTER CARD */}
+        {/* ===================================== */}
+        <meta name="twitter:card" content="summary_large_image" />
+
+        <meta name="twitter:title" content={pageTitle} />
+
+        <meta name="twitter:description" content={pageDescription} />
+
+        <meta name="twitter:image" content={`${DOMAIN}/images/banner.webp`} />
+
+        {/* ===================================== */}
+        {/* JSON-LD */}
+        {/* ===================================== */}
         <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "EducationalOrganization",
-            name: `Bimbel & Les Privat IUP UGM Edumatrix ${kelurahan.kelurahan}`,
-            image: "https://supercampui.com/images/banner.webp",
-            url: `https://supercampui.com/bimbingan-privat-iup-ugm/${kelurahan.slug}`,
-            address: {
-              "@type": "PostalAddress",
-              addressLocality: kelurahan.kelurahan,
-              addressCountry: "ID",
-            },
-            description: `Layanan Bimbel dan Les Privat spesialis persiapan International Undergraduate Program (IUP) UGM untuk wilayah kelurahan ${kelurahan.kelurahan}.`,
-          })}
+          {JSON.stringify(structuredData)}
         </script>
       </Helmet>
-
       <JumbotronLps />
       <div className="parent-text-seo-lps">
         <h1 className="text-seo-lps">
-          Bimbingan Privat IUP UGM {kelurahan.kelurahan} Terbaik - Intensif
-          Privat IUP UGM FK dan Non FK
+          Bimbingan Privat IUP UGM {namaKelurahan} Terbaik - Intensif Privat IUP
+          UGM FK dan Non FK
         </h1>
         <p className="desk-seo-lps">
-          Bimbingan IUP UGM {kelurahan.kelurahan} Terbaik. Fokus Les Intensif
-          IUP UGM Kedokteran dan Non FK, Belajar All Subtest, Master Teacher
+          Bimbingan IUP UGM {namaKelurahan} Terbaik. Fokus Les Intensif IUP UGM
+          Kedokteran dan Non FK, Belajar All Subtest, Master Teacher
           Berpengalaman, Jadwal Fleksibel, CS Responsif, Konsultasi Progress
           Belajar
         </p>

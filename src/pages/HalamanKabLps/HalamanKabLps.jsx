@@ -1,8 +1,7 @@
-import axios from "axios";
-import React, { useEffect, useMemo, useState } from "react";
+import React from "react";
 import { Helmet } from "react-helmet-async";
 
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import AlumniKedokteranLps from "../../Components/AlumniKedokteranLps/AlumniKedokteranLps";
 import AlumniPtnLps from "../../Components/AlumniPTNLPS/AlumniPTNLPS";
 import BenefitScLps from "../../Components/BenefitScLPS/BenefitScLPS";
@@ -26,128 +25,105 @@ import TutorLpsSc from "../../Components/TutorLpsSc/TutorLpsSc";
 import VenueScLps from "../../Components/VenueScLps/VenueScLps";
 import VideoScLps from "../../Components/VideoScLps/VideoScLps";
 import WaktuPelaksanaanSc from "../../Components/WaktuPelaksanaanSc/WaktuPelaksanaanSc";
+import { DOMAIN } from "../../utils/domain";
+import formatNamaWilayah from "../../utils/formatNamaWilayah";
 
 const HalamanKabLps = () => {
+  // =========================================
+  // AMBIL SLUG KABUPATEN DARI URL
+  // =========================================
   const { id } = useParams();
-  const [kabupaten, setKabupaten] = useState([]);
 
-  function useQuery() {
-    const { search } = useLocation();
-    return useMemo(() => new URLSearchParams(search), [search]);
-  }
+  // =========================================
+  // FORMAT NAMA KABUPATEN
+  // =========================================
+  const namaKabupaten = formatNamaWilayah(id);
 
-  const query = useQuery();
+  // =========================================
+  // CANONICAL URL
+  // =========================================
+  const slugKabupaten = String(id || "")
+    .trim()
+    .toLowerCase();
 
-  useEffect(() => {
-    const axiosJWT = axios.create();
-    const getKabupaten = async () => {
-      const response = await axiosJWT.get(
-        `https://apilps.edusmart-indonesia.com/ibukotakabupaten/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer`,
-          },
-        },
-      );
-      setKabupaten(response.data);
-    };
-    getKabupaten(id);
-  }, [id, query]);
+  const canonicalUrl = `${DOMAIN}/les-privat-supercamp-utbk-snbt/${encodeURIComponent(slugKabupaten)}`;
+
+  // =========================================
+  // SEO METADATA
+  // =========================================
+  const pageTitle = `Les Privat UTBK SNBT ${namaKabupaten} | Bimbel Supercamp`;
+
+  const pageDescription = `Persiapan UTBK SNBT untuk siswa di ${namaKabupaten} bersama Bimbel Supercamp. Program les privat, karantina intensif, dan pendampingan belajar masuk PTN serta Kedokteran.`;
+
+  // =========================================
+  // STRUCTURED DATA
+  // =========================================
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: pageTitle,
+    description: pageDescription,
+    url: canonicalUrl,
+    inLanguage: "id-ID",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Bimbel Supercamp",
+      url: `${DOMAIN}/`,
+    },
+  };
 
   return (
     <React.Fragment>
       <Helmet>
-        {/* 1. Basic SEO - Judul mengandung Brand & Lokasi di awal (Primary Keyword) */}
-        <title>
-          Les Privat UTBK SNBT {kabupaten.kota_kabupaten} 2026 - Bimbel
-          Kedokteran #1
-        </title>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{pageTitle}</title>
 
-        {/* 2. Meta Description - Mengandung Call to Action (CTA) untuk meningkatkan CTR */}
-        <meta
-          name="description"
-          content={`Les Privat UTBK SNBT di ${kabupaten.kota_kabupaten} terbaik. Persiapan intensif masuk Kedokteran, UI, UGM, ITB, & UNDIP. Guru ke rumah atau Online. Garansi Master Teacher berpengalaman. Daftar sekarang!`}
-        />
-        <meta
-          name="keywords"
-          content={`les privat utbk snbt ${kabupaten.kota_kabupaten}, bimbel ptn ${kabupaten.kota_kabupaten}, bimbel kedokteran ${kabupaten.kota_kabupaten}, simak ui ${kabupaten.kota_kabupaten}, cbt ugm ${kabupaten.kota_kabupaten}, guru privat datang ke rumah ${kabupaten.kota_kabupaten}`}
-        />
+        <meta name="description" content={pageDescription} />
 
-        {/* 3. Canonical Link - Menghindari Duplikasi Konten */}
-        <link
-          rel="canonical"
-          href={`https://supercampui.com/les-privat-supercamp-utbk-snbt/${kabupaten.slug}`}
-        />
+        <link rel="canonical" href={canonicalUrl} />
 
-        {/* 4. Open Graph (Untuk WhatsApp & Social Media) */}
+        <meta name="robots" content="index, follow" />
+
+        {/* ===================================== */}
+        {/* OPEN GRAPH */}
+        {/* ===================================== */}
         <meta property="og:type" content="website" />
-        <meta
-          property="og:title"
-          content={`Bimbel Les Privat UTBK SNBT di ${kabupaten.kota_kabupaten} - Lolos PTN Favorit`}
-        />
-        <meta
-          property="og:description"
-          content={`Dapatkan pendampingan belajar intensif di ${kabupaten.kota_kabupaten}. Program khusus Kedokteran & PTN Unggulan.`}
-        />
-        <meta
-          property="og:url"
-          content={`https://supercampui.com/les-privat-supercamp-utbk-snbt/${kabupaten.slug}`}
-        />
-        <meta
-          property="og:image"
-          content="https://supercampmatrix/images/banner.webp"
-        />
 
-        {/* 5. Schema Markup (JSON-LD) - Kunci Halaman 1 */}
+        <meta property="og:site_name" content="Bimbel Supercamp" />
+
+        <meta property="og:title" content={pageTitle} />
+
+        <meta property="og:description" content={pageDescription} />
+
+        <meta property="og:url" content={canonicalUrl} />
+
+        <meta property="og:image" content={`${DOMAIN}/images/banner.webp`} />
+
+        <meta property="og:locale" content="id_ID" />
+
+        {/* ===================================== */}
+        {/* TWITTER CARD */}
+        {/* ===================================== */}
+        <meta name="twitter:card" content="summary_large_image" />
+
+        <meta name="twitter:title" content={pageTitle} />
+
+        <meta name="twitter:description" content={pageDescription} />
+
+        <meta name="twitter:image" content={`${DOMAIN}/images/banner.webp`} />
+
+        {/* ===================================== */}
+        {/* JSON-LD */}
+        {/* ===================================== */}
         <script type="application/ld+json">
-          {JSON.stringify([
-            {
-              "@context": "https://schema.org",
-              "@type": "Service",
-              serviceType: "Les Privat UTBK SNBT",
-              provider: {
-                "@type": "EducationalOrganization",
-                name: "Bimbel LPS",
-                url: "https://supercampui.com",
-              },
-              areaServed: {
-                "@type": "City",
-                name: kabupaten.kota_kabupaten,
-              },
-              description: `Bimbingan belajar les privat persiapan UTBK SNBT, SIMAK UI, dan CBT UGM di ${kabupaten.kota_kabupaten}.`,
-            },
-            {
-              "@context": "https://schema.org",
-              "@type": "FAQPage",
-              mainEntity: [
-                {
-                  "@type": "Question",
-                  name: `Apakah ada layanan guru datang ke rumah di ${kabupaten.kota_kabupaten}?`,
-                  acceptedAnswer: {
-                    "@type": "Answer",
-                    text: `Ya, Edumatrix menyediakan layanan guru les privat datang ke rumah untuk wilayah ${kabupaten.kota_kabupaten} dan sekitarnya.`,
-                  },
-                },
-                {
-                  "@type": "Question",
-                  name: "Program apa saja yang tersedia?",
-                  acceptedAnswer: {
-                    "@type": "Answer",
-                    text: "Kami fokus pada persiapan masuk Fakultas Kedokteran dan PTN favorit melalui jalur UTBK SNBT, SIMAK UI, dan CBT UGM.",
-                  },
-                },
-              ],
-            },
-          ])}
+          {JSON.stringify(structuredData)}
         </script>
       </Helmet>
+
       <JumbotronLps />
       <div className="parent-text-seo-lps">
         <h1 className="text-seo-lps">
-          Les Privat UTBK SNBT di {kabupaten.kota_kabupaten} - Bimbingan Masuk
-          PTN dan Kedokteran
+          Les Privat UTBK SNBT di {namaKabupaten} - Bimbingan Masuk PTN dan
+          Kedokteran
         </h1>
         <p className="desk-seo-lps">
           Bimbel LPS adalah solusi terbaik untuk Anda yang membutuhkan layanan

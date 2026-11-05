@@ -1,7 +1,5 @@
-import axios from "axios";
-import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import AlumniKedokteranLps from "../../Components/AlumniKedokteranLps/AlumniKedokteranLps";
 import AlumniPtnLps from "../../Components/AlumniPTNLPS/AlumniPTNLPS";
 import BenefitScLps from "../../Components/BenefitScLPS/BenefitScLPS";
@@ -25,106 +23,112 @@ import TutorLpsSc from "../../Components/TutorLpsSc/TutorLpsSc";
 import VenueScLps from "../../Components/VenueScLps/VenueScLps";
 import VideoScLps from "../../Components/VideoScLps/VideoScLps";
 import WaktuPelaksanaanSc from "../../Components/WaktuPelaksanaanSc/WaktuPelaksanaanSc";
+import { DOMAIN } from "../../utils/domain";
+import formatNamaWilayah from "../../utils/formatNamaWilayah";
 
 const HalamanKabPtn = () => {
+  // =========================================
+  // AMBIL SLUG KABUPATEN DARI URL
+  // =========================================
   const { id } = useParams();
-  const [kabupaten, setKabupaten] = useState([]);
 
-  function useQuery() {
-    const { search } = useLocation();
-    return useMemo(() => new URLSearchParams(search), [search]);
-  }
+  // =========================================
+  // FORMAT NAMA KABUPATEN
+  // =========================================
+  const namaKabupaten = formatNamaWilayah(id);
 
-  const query = useQuery();
+  // =========================================
+  // CANONICAL URL
+  // =========================================
+  const slugKabupaten = String(id || "")
+    .trim()
+    .toLowerCase();
 
-  useEffect(() => {
-    const axiosJWT = axios.create();
-    const getKabupaten = async () => {
-      const response = await axiosJWT.get(
-        `https://apilps.edusmart-indonesia.com/ibukotakabupaten/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer`,
-          },
-        },
-      );
-      setKabupaten(response.data);
-    };
-    getKabupaten(id);
-  }, [id, query]);
+  const canonicalUrl = `${DOMAIN}/bimbel-les-privat-masuk-ptn/${encodeURIComponent(slugKabupaten)}`;
+
+  // =========================================
+  // SEO METADATA
+  // =========================================
+  const pageTitle = `Bimbel Masuk PTN ${namaKabupaten} | Les Privat UTBK SNBT`;
+
+  const pageDescription = `Persiapan masuk PTN favorit untuk siswa di ${namaKabupaten} bersama Bimbel Supercamp. Program les privat UTBK SNBT, latihan soal, dan bimbingan intensif untuk seleksi perguruan tinggi.`;
+
+  // =========================================
+  // STRUCTURED DATA
+  // =========================================
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: pageTitle,
+    description: pageDescription,
+    url: canonicalUrl,
+    inLanguage: "id-ID",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Bimbel Supercamp",
+      url: `${DOMAIN}/`,
+    },
+  };
+
   return (
     <>
+      {/* ===================================== */}
+      {/* SEO METADATA */}
+      {/* ===================================== */}
       <Helmet>
-        {/* Perbaikan Title: Menggunakan satu string utuh di dalam kurung kurawal agar tidak error */}
-        <title>{`Bimbel & Les Privat UTBK SNBT ${kabupaten.kota_kabupaten} 2026 - Lolos PTN #1`}</title>
+        <title>{pageTitle}</title>
 
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content={pageDescription} />
 
-        {/* Meta Description: Menggabungkan Bimbel & Les Privat + Lokasi Spesifik */}
-        <meta
-          name="description"
-          content={`Bimbel & Les Privat UTBK SNBT di ${kabupaten.kota_kabupaten} terbaik. Spesialis persiapan masuk Kedokteran, UI, UGM, ITB, & UNDIP. Guru datang ke rumah atau Online. Master Teacher berpengalaman & Modul Akurat. Daftar sekarang!`}
-        />
-        <meta
-          name="keywords"
-          content={`bimbel les privat ${kabupaten.kota_kabupaten}, bimbel ptn ${kabupaten.kota_kabupaten}, les privat kedokteran ${kabupaten.kota_kabupaten}, bimbingan belajar ${kabupaten.kota_kabupaten}, guru privat ke rumah ${kabupaten.kota_kabupaten}, karantina ui ugm`}
-        />
+        <link rel="canonical" href={canonicalUrl} />
 
-        <link
-          rel="canonical"
-          href={`https://supercampui.com/bimbel-les-privat-masuk-ptn/${kabupaten.slug}`}
-        />
+        <meta name="robots" content="index, follow" />
 
-        {/* Open Graph untuk Preview WhatsApp yang menarik */}
+        {/* ===================================== */}
+        {/* OPEN GRAPH */}
+        {/* ===================================== */}
         <meta property="og:type" content="website" />
-        <meta
-          property="og:title"
-          content={`Bimbel & Les Privat di ${kabupaten.kota_kabupaten} - Bimbel LPS`}
-        />
-        <meta
-          property="og:description"
-          content={`Raih kursi PTN Impian bersama spesialis Bimbel & Les Privat di ${kabupaten.kota_kabupaten}. Program intensif Kedokteran 2026.`}
-        />
-        <meta
-          property="og:url"
-          content={`https://supercampui.com/bimbel-les-privat-masuk-ptn/${kabupaten.slug}`}
-        />
-        <meta
-          property="og:image"
-          content="https://supercampui.com/images/banner.webp"
-        />
 
-        {/* Schema Markup JSON-LD untuk mempermudah Google indexing lokasi */}
+        <meta property="og:site_name" content="Bimbel Supercamp" />
+
+        <meta property="og:title" content={pageTitle} />
+
+        <meta property="og:description" content={pageDescription} />
+
+        <meta property="og:url" content={canonicalUrl} />
+
+        <meta property="og:image" content={`${DOMAIN}/images/banner.webp`} />
+
+        <meta property="og:locale" content="id_ID" />
+
+        {/* ===================================== */}
+        {/* TWITTER CARD */}
+        {/* ===================================== */}
+        <meta name="twitter:card" content="summary_large_image" />
+
+        <meta name="twitter:title" content={pageTitle} />
+
+        <meta name="twitter:description" content={pageDescription} />
+
+        <meta name="twitter:image" content={`${DOMAIN}/images/banner.webp`} />
+
+        {/* ===================================== */}
+        {/* JSON-LD */}
+        {/* ===================================== */}
         <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "EducationalOrganization",
-            name: `Bimbel & Les Privat Edumatrix ${kabupaten.kota_kabupaten}`,
-            image: "https://supercampui.com/images/banner.webp",
-            url: `https://supercampui.com/bimbel-les-privat-masuk-ptn/${kabupaten.slug}`,
-            telephone: "+6282258689993",
-            address: {
-              "@type": "PostalAddress",
-              addressLocality: kabupaten.kota_kabupaten,
-              addressCountry: "ID",
-            },
-            description: `Lembaga bimbingan belajar dan les privat persiapan masuk PTN dan Kedokteran unggulan di ${kabupaten.kota_kabupaten}.`,
-          })}
+          {JSON.stringify(structuredData)}
         </script>
       </Helmet>
-
       <JumbotronLps />
       <div className="parent-text-seo-lps">
         <h1 className="text-seo-lps">
-          Les Privat UTBK SNBT di {kabupaten.kota_kabupaten} - Spesialis Masuk
-          PTN
+          Les Privat UTBK SNBT di {namaKabupaten} - Spesialis Masuk PTN
         </h1>
         <p className="desk-seo-lps">
-          Les Privat Masuk PTN di {kabupaten.kota_kabupaten} Terbaik
-          Berpengalaman. Intensif Privat Sukses Masuk PTN, Modul UTBK SNBT
-          Lengkap, Tryout UTBK Online, Konsultasi Jurusan dan PTN, Privat Semua
-          Subtes UTBK, Report Progress
+          Les Privat Masuk PTN di {namaKabupaten} Terbaik Berpengalaman.
+          Intensif Privat Sukses Masuk PTN, Modul UTBK SNBT Lengkap, Tryout UTBK
+          Online, Konsultasi Jurusan dan PTN, Privat Semua Subtes UTBK, Report
+          Progress
         </p>
       </div>
       <LulusanLps />

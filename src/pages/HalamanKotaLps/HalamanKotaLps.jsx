@@ -1,5 +1,4 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { Helmet } from "react-helmet-async";
 import { useParams } from "react-router-dom";
@@ -27,122 +26,99 @@ import TutorLpsSc from "../../Components/TutorLpsSc/TutorLpsSc";
 import VenueScLps from "../../Components/VenueScLps/VenueScLps";
 import VideoScLps from "../../Components/VideoScLps/VideoScLps";
 import WaktuPelaksanaanSc from "../../Components/WaktuPelaksanaanSc/WaktuPelaksanaanSc";
+import formatNamaWilayah from "../../utils/formatNamaWilayah";
 import "./HalamanKotaLps.css";
 
 const HalamanKotaLps = () => {
+  // =========================================
+  // AMBIL PARAMETER URL
+  // =========================================
   const { id } = useParams();
 
-  const [kota, setKota] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // =========================================
+  // FORMAT SLUG MENJADI NAMA KOTA
+  // =========================================
+  const namaKota = formatNamaWilayah(id);
 
-  useEffect(() => {
-    // Keluar jika `id` belum tersedia
-    if (!id) return;
+  // =========================================
+  // SLUG UNTUK CANONICAL
+  // =========================================
+  const slugKota = String(id || "")
+    .trim()
+    .toLowerCase();
 
-    const getKota = async () => {
-      setLoading(true);
-      setError(null);
+  const canonicalUrl = `https://bimbelsupercamp.com/bimbel-privat-supercamp-utbk-snbt/${encodeURIComponent(slugKota)}`;
 
-      try {
-        // --- Penggunaan axios standar dan URL endpoint ---
-        const response = await axios.get(
-          `https://apilps.edusmart-indonesia.com/kota/${id}`,
-        );
-        // --- Selesai ---
+  // =========================================
+  // SEO METADATA
+  // =========================================
+  const pageTitle = `Bimbel UTBK SNBT ${namaKota} | Supercamp Masuk PTN`;
 
-        setKota(response.data);
-      } catch (err) {
-        console.error("Gagal mengambil data kota:", err);
-        setError("Gagal memuat data kota.");
-        setKota(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getKota(); // Panggil fungsi pengambilan data
-  }, [id]); // Dependensi hanya perlu `id`
-
-  // --- Penanganan UI (Loading, Error, Not Found) ---
-  if (loading) {
-    return <div>Memuat data kota...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  if (!kota) {
-    return <div>Data kota dengan ID {id} tidak ditemukan.</div>;
-  }
+  const pageDescription = `Persiapan UTBK SNBT di ${namaKota} bersama Bimbel Supercamp. Program intensif, karantina, dan les privat untuk masuk PTN favorit serta Kedokteran.`;
 
   return (
     <React.Fragment>
       <Helmet>
-        {/* Basic SEO */}
-        <title>
-          Bimbel UTBK SNBT {kota.kota} 2026 - Karantina Supercamp & Privat
-          Kedokteran
-        </title>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta
-          name="description"
-          content={`Bimbel UTBK SNBT ${kota.kota} terbaik 2026. Program Supercamp Karantina & Les Privat Kedokteran. Lulus UI, UGM, ITB, UNAIR lewat SIMAK UI & CBT UGM. Guru ke rumah & Online.`}
-        />
+        {/* ===================================== */}
+        {/* BASIC SEO */}
+        {/* ===================================== */}
+
+        <title>{pageTitle}</title>
+
+        <meta name="description" content={pageDescription} />
+
         <meta
           name="keywords"
-          content={`bimbel utbk snbt ${kota.kota}, les privat ptn ${kota.kota}, supercamp kedokteran 2026, karantina simak ui, cbt ugm, Bimbel LPS`}
-        />
-        <link
-          rel="canonical"
-          href={`https://supercampui.com/bimbel-privat-supercamp-utbk-snbt/${kota.slug}`}
+          content={`bimbel utbk snbt ${namaKota}, les privat ptn ${namaKota}, supercamp ${namaKota}, karantina masuk ptn, bimbel masuk kedokteran`}
         />
 
-        {/* Open Graph / Facebook / WhatsApp */}
+        <link rel="canonical" href={canonicalUrl} />
+
+        <meta name="robots" content="index, follow" />
+
+        {/* ===================================== */}
+        {/* OPEN GRAPH */}
+        {/* ===================================== */}
+
         <meta property="og:type" content="website" />
-        <meta
-          property="og:title"
-          content={`Bimbel UTBK SNBT ${kota.kota} 2026 - Karantina Kedokteran #1`}
-        />
-        <meta
-          property="og:description"
-          content={`Daftar sekarang di Bimbel Supercamp Matrix ${kota.kota}. Persiapan intensif masuk Kedokteran & PTN Favorit. Program Proven & Bergaransi.`}
-        />
-        <meta
-          property="og:url"
-          content={`https://supercampui.com/bimbel-privat-supercamp-utbk-snbt/${kota.slug}`}
-        />
+
+        <meta property="og:title" content={pageTitle} />
+
+        <meta property="og:description" content={pageDescription} />
+
+        <meta property="og:url" content={canonicalUrl} />
+
         <meta
           property="og:image"
-          content="https://supercampui.com/images/banner.webp"
+          content="https://bimbelsupercamp.com/images/banner.webp"
         />
 
-        {/* Twitter Tags */}
+        {/* ===================================== */}
+        {/* TWITTER */}
+        {/* ===================================== */}
+
         <meta name="twitter:card" content="summary_large_image" />
-        <meta
-          name="twitter:title"
-          content={`Bimbel UTBK SNBT ${kota.kota} - Bimbel LPS`}
-        />
 
-        {/* Schema Markup JSON-LD (Sangat Penting untuk SEO Lokal) */}
+        <meta name="twitter:title" content={pageTitle} />
+
+        <meta name="twitter:description" content={pageDescription} />
+
+        {/* ===================================== */}
+        {/* JSON-LD */}
+        {/* ===================================== */}
+
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "EducationalOrganization",
-            name: `Bimbel Supercamp Matrix ${kota.kota}`,
-            description: `Lembaga bimbingan belajar persiapan masuk PTN dan Kedokteran di ${kota.kota}.`,
-            url: `https://supercampui.com/bimbel-privat-supercamp-utbk-snbt/${kota.slug}`,
-            address: {
-              "@type": "PostalAddress",
-              addressLocality: kota.kota,
-              addressCountry: "ID",
-            },
-            aggregateRating: {
-              "@type": "AggregateRating",
-              ratingValue: "4.9",
-              reviewCount: "1250",
+            "@type": "WebPage",
+            name: pageTitle,
+            description: pageDescription,
+            url: canonicalUrl,
+            inLanguage: "id-ID",
+            isPartOf: {
+              "@type": "WebSite",
+              name: "Bimbel Supercamp",
+              url: "https://bimbelsupercamp.com/",
             },
           })}
         </script>
@@ -154,7 +130,7 @@ const HalamanKotaLps = () => {
           <div className="header-seo-lps">
             <h1 className="text-seo-lps">
               Bimbel UTBK SNBT di{" "}
-              <span className="highlight-city">{kota.kota}</span> - Les Privat &
+              <span className="highlight-city">{namaKota}</span> - Les Privat &
               Supercamp PTN Kedokteran 2026
             </h1>
           </div>

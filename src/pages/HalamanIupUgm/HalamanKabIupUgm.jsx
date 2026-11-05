@@ -1,7 +1,5 @@
-import axios from "axios";
-import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import AlumniKedokteranLps from "../../Components/AlumniKedokteranLps/AlumniKedokteranLps";
 import AlumniPtnLps from "../../Components/AlumniPTNLPS/AlumniPTNLPS";
 import BenefitScLps from "../../Components/BenefitScLPS/BenefitScLPS";
@@ -25,106 +23,114 @@ import TutorLpsSc from "../../Components/TutorLpsSc/TutorLpsSc";
 import VenueScLps from "../../Components/VenueScLps/VenueScLps";
 import VideoScLps from "../../Components/VideoScLps/VideoScLps";
 import WaktuPelaksanaanSc from "../../Components/WaktuPelaksanaanSc/WaktuPelaksanaanSc";
+import { DOMAIN } from "../../utils/domain";
+import formatNamaWilayah from "../../utils/formatNamaWilayah";
 
 const HalamanKabIupUgm = () => {
+  // =========================================
+  // AMBIL SLUG KABUPATEN DARI URL
+  // =========================================
   const { id } = useParams();
-  const [kabupaten, setKabupaten] = useState([]);
 
-  function useQuery() {
-    const { search } = useLocation();
-    return useMemo(() => new URLSearchParams(search), [search]);
-  }
+  // =========================================
+  // FORMAT NAMA KABUPATEN
+  // =========================================
+  const namaKabupaten = formatNamaWilayah(id);
 
-  const query = useQuery();
+  // =========================================
+  // CANONICAL URL
+  // =========================================
+  const slugKabupaten = String(id || "")
+    .trim()
+    .toLowerCase();
 
-  useEffect(() => {
-    const axiosJWT = axios.create();
-    const getKabupaten = async () => {
-      const response = await axiosJWT.get(
-        `https://apilps.edusmart-indonesia.com/ibukotakabupaten/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer`,
-          },
-        },
-      );
-      setKabupaten(response.data);
-    };
-    getKabupaten(id);
-  }, [id, query]);
+  const canonicalUrl = `${DOMAIN}/les-privat-iup-ugm/${encodeURIComponent(slugKabupaten)}`;
+
+  // =========================================
+  // SEO METADATA
+  // =========================================
+  const pageTitle = `Bimbel IUP UGM ${namaKabupaten} | Les Privat & Persiapan Seleksi`;
+
+  const pageDescription = `Persiapan seleksi IUP UGM di ${namaKabupaten} bersama Bimbel Supercamp. Program les privat intensif, latihan soal, dan pendampingan untuk seleksi International Undergraduate Program UGM.`;
+
+  // =========================================
+  // STRUCTURED DATA
+  // =========================================
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: pageTitle,
+    description: pageDescription,
+    url: canonicalUrl,
+    inLanguage: "id-ID",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Bimbel Supercamp",
+      url: `${DOMAIN}/`,
+    },
+  };
 
   return (
     <>
+      {/* ===================================== */}
+      {/* SEO METADATA */}
+      {/* ===================================== */}
       <Helmet>
-        {/* Fix Title: Menggunakan template literal di dalam {} agar aman dari error Helmet */}
-        <title>{`Bimbel & Les Privat IUP UGM ${kabupaten.kota_kabupaten} 2026 - Lolos Intake #1`}</title>
+        <title>{pageTitle}</title>
 
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content={pageDescription} />
 
-        {/* Meta Description: Hybrid Keyword + Target IUP UGM (GMST/AcEPT) + Lokasi Kabupaten */}
-        <meta
-          name="description"
-          content={`Bimbel & Les Privat IUP UGM terbaik di ${kabupaten.kota_kabupaten}. Persiapan intensif GMST, AcEPT, & Interview spesialis lulus FK & Non-FK. Guru datang ke rumah wilayah ${kabupaten.kota_kabupaten}. Master Teacher Expert & drilling soal terbaru. Daftar Sekarang!`}
-        />
-        <meta
-          name="keywords"
-          content={`bimbel iup ugm ${kabupaten.kota_kabupaten}, les privat iup ugm ${kabupaten.kota_kabupaten}, persiapan gmst ${kabupaten.kota_kabupaten}, pelatihan acept ugm, bimbel iup kedokteran, guru privat iup ugm, Bimbel LPS`}
-        />
+        <link rel="canonical" href={canonicalUrl} />
 
-        {/* Canonical Link */}
-        <link
-          rel="canonical"
-          href={`https://supercampui.com/les-privat-iup-ugm/${kabupaten.slug}`}
-        />
+        <meta name="robots" content="index, follow" />
 
-        {/* Open Graph (Optimal untuk WhatsApp Preview) */}
+        {/* ===================================== */}
+        {/* OPEN GRAPH */}
+        {/* ===================================== */}
         <meta property="og:type" content="website" />
-        <meta
-          property="og:title"
-          content={`Bimbel & Les Privat IUP UGM di ${kabupaten.kota_kabupaten} - Bimbel LPS`}
-        />
-        <meta
-          property="og:description"
-          content={`Raih kursi International Undergraduate Program (IUP) UGM melalui bimbingan spesialis di ${kabupaten.kota_kabupaten}.`}
-        />
-        <meta
-          property="og:url"
-          content={`https://supercampui.com/les-privat-iup-ugm/${kabupaten.slug}`}
-        />
-        <meta
-          property="og:image"
-          content="https://supercampui.com/images/banner.webp"
-        />
 
-        {/* Schema Markup JSON-LD: Sangat penting untuk otoritas SEO Lokal tingkat Kabupaten */}
+        <meta property="og:site_name" content="Bimbel Supercamp" />
+
+        <meta property="og:title" content={pageTitle} />
+
+        <meta property="og:description" content={pageDescription} />
+
+        <meta property="og:url" content={canonicalUrl} />
+
+        <meta property="og:image" content={`${DOMAIN}/images/banner.webp`} />
+
+        <meta property="og:locale" content="id_ID" />
+
+        {/* ===================================== */}
+        {/* TWITTER CARD */}
+        {/* ===================================== */}
+        <meta name="twitter:card" content="summary_large_image" />
+
+        <meta name="twitter:title" content={pageTitle} />
+
+        <meta name="twitter:description" content={pageDescription} />
+
+        <meta name="twitter:image" content={`${DOMAIN}/images/banner.webp`} />
+
+        {/* ===================================== */}
+        {/* JSON-LD */}
+        {/* ===================================== */}
         <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "EducationalOrganization",
-            name: `Bimbel & Les Privat IUP UGM Edumatrix ${kabupaten.kota_kabupaten}`,
-            image: "https://supercampui.com/images/banner.webp",
-            url: `https://supercampui.com/les-privat-iup-ugm/${kabupaten.slug}`,
-            address: {
-              "@type": "PostalAddress",
-              addressLocality: kabupaten.kota_kabupaten,
-              addressCountry: "ID",
-            },
-            description: `Lembaga Bimbel dan Les Privat spesialis persiapan International Undergraduate Program (IUP) UGM untuk wilayah ${kabupaten.kota_kabupaten}.`,
-          })}
+          {JSON.stringify(structuredData)}
         </script>
       </Helmet>
+
       <JumbotronLps />
       <div className="parent-text-seo-lps">
         <h1 className="text-seo-lps">
-          Les Privat IUP UGM di {kabupaten.kota_kabupaten} Terbaik - Intensif
-          Privat IUP UGM FK dan Non FK
+          Les Privat IUP UGM di {namaKabupaten} Terbaik - Intensif Privat IUP
+          UGM FK dan Non FK
         </h1>
         <p className="desk-seo-lps">
-          Les Privat IUP UGM {kabupaten.kota_kabupaten} Terbaik. Fokus Les
-          Intensif IUP UGM Kedokteran dan Non FK, Belajar All Subtest, Master
-          Teacher Berpengalaman, Jadwal Fleksibel, CS Responsif, Konsultasi
-          Progress Belajar
+          Les Privat IUP UGM {namaKabupaten} Terbaik. Fokus Les Intensif IUP UGM
+          Kedokteran dan Non FK, Belajar All Subtest, Master Teacher
+          Berpengalaman, Jadwal Fleksibel, CS Responsif, Konsultasi Progress
+          Belajar
         </p>
       </div>
       <LulusanLps />

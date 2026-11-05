@@ -1,8 +1,6 @@
-import axios from "axios";
-import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import AlumniKedokteranLps from "../../Components/AlumniKedokteranLps/AlumniKedokteranLps";
 import AlumniPtnLps from "../../Components/AlumniPTNLPS/AlumniPTNLPS";
 import BenefitScLps from "../../Components/BenefitScLPS/BenefitScLPS";
@@ -25,103 +23,103 @@ import TutorLpsSc from "../../Components/TutorLpsSc/TutorLpsSc";
 import VenueScLps from "../../Components/VenueScLps/VenueScLps";
 import VideoScLps from "../../Components/VideoScLps/VideoScLps";
 import WaktuPelaksanaanSc from "../../Components/WaktuPelaksanaanSc/WaktuPelaksanaanSc";
+import { DOMAIN } from "../../utils/domain";
+import formatNamaWilayah from "../../utils/formatNamaWilayah";
 
 const HalamanKelLps = () => {
+  // =========================================
+  // AMBIL PARAMETER URL
+  // =========================================
   const { kelSlug } = useParams();
-  const [kelurahan, setKelurahan] = useState([]);
 
-  function useQuery() {
-    const { search } = useLocation();
-    return useMemo(() => new URLSearchParams(search), [search]);
-  }
+  // =========================================
+  // FORMAT NAMA KELURAHAN DARI SLUG
+  // =========================================
+  const namaKelurahan = formatNamaWilayah(kelSlug);
 
-  const query = useQuery();
+  // =========================================
+  // SLUG UNTUK CANONICAL
+  // =========================================
+  const slugKelurahan = String(kelSlug || "")
+    .trim()
+    .toLowerCase();
 
-  useEffect(() => {
-    const axiosJWT = axios.create();
-    const getKelurahan = async () => {
-      const response = await axiosJWT.get(
-        `https://apilps.edusmart-indonesia.com/kelurahankec/${kelSlug}`,
-        {
-          headers: {
-            Authorization: `Bearer`,
-          },
-        },
-      );
-      setKelurahan(response.data);
-    };
-    getKelurahan(kelSlug);
-  }, [kelSlug, query]);
+  const canonicalUrl = `${DOMAIN}/bimbingan-privat-supercamp-utbk-snbt/${encodeURIComponent(slugKelurahan)}`;
+
+  // =========================================
+  // SEO METADATA
+  // =========================================
+  const pageTitle = `Bimbel UTBK SNBT ${namaKelurahan} | Les Privat & Supercamp`;
+
+  const pageDescription = `Persiapan UTBK SNBT di ${namaKelurahan} bersama Bimbel Supercamp. Program les privat dan karantina intensif untuk masuk PTN favorit serta Kedokteran.`;
+
+  // =========================================
+  // STRUCTURED DATA
+  // =========================================
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: pageTitle,
+    description: pageDescription,
+    url: canonicalUrl,
+    inLanguage: "id-ID",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Bimbel Supercamp",
+      url: `${DOMAIN}/`,
+    },
+  };
 
   return (
     <>
+      {/* ===================================== */}
+      {/* SEO METADATA */}
+      {/* ===================================== */}
       <Helmet>
-        {/* Basic SEO - Menggabungkan Bimbel & Les Privat di Level Kelurahan */}
-        <title>
-          Bimbel & Les Privat {kelurahan.kelurahan} 2026 - Supercamp Karantina
-          PTN
-        </title>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{pageTitle}</title>
 
-        {/* Meta Description - Mengandung Keyword Lokasi Kelurahan, Jalur Masuk, & CTA */}
-        <meta
-          name="description"
-          content={`Bimbel & Les Privat di ${kelurahan.kelurahan} 2026. Persiapan intensif masuk Kedokteran, UI, UGM, & ITB via SIMAK UI, CBT UGM, & SNBT. Guru privat ke rumah atau online di wilayah ${kelurahan.kelurahan}. Daftar Sekarang!`}
-        />
+        <meta name="description" content={pageDescription} />
+
         <meta
           name="keywords"
-          content={`bimbel les privat ${kelurahan.kelurahan}, bimbel ptn ${kelurahan.kelurahan}, les privat kedokteran ${kelurahan.kelurahan}, guru privat ke rumah ${kelurahan.kelurahan}, karantina ptn ${kelurahan.kelurahan}, bimbingan belajar ${kelurahan.kelurahan}`}
+          content={`bimbel utbk snbt ${namaKelurahan}, les privat ${namaKelurahan}, bimbel masuk ptn ${namaKelurahan}, supercamp ${namaKelurahan}, bimbel kedokteran ${namaKelurahan}`}
         />
 
-        {/* Canonical Link */}
-        <link
-          rel="canonical"
-          href={`https://supercampui.com/bimbingan-privat-supercamp-utbk-snbt/${kelurahan.slug}`}
-        />
+        <link rel="canonical" href={canonicalUrl} />
 
-        {/* Open Graph (Social Media & WhatsApp) */}
+        <meta name="robots" content="index, follow" />
+
+        {/* OPEN GRAPH */}
         <meta property="og:type" content="website" />
-        <meta
-          property="og:title"
-          content={`Bimbel & Les Privat di ${kelurahan.kelurahan} - Lolos PTN & Kedokteran`}
-        />
-        <meta
-          property="og:description"
-          content={`Program Bimbel & Les Privat terbaik untuk sukses masuk Kedokteran & PTN Favorit di wilayah ${kelurahan.kelurahan}.`}
-        />
-        <meta
-          property="og:url"
-          content={`https://supercampui.com/bimbingan-privat-supercamp-utbk-snbt/${kelurahan.slug}`}
-        />
-        <meta
-          property="og:image"
-          content="https://supercampui.com/images/banner.webp"
-        />
 
-        {/* Schema Markup JSON-LD - Sangat Kuat untuk SEO Lokal */}
+        <meta property="og:title" content={pageTitle} />
+
+        <meta property="og:description" content={pageDescription} />
+
+        <meta property="og:url" content={canonicalUrl} />
+
+        <meta property="og:image" content={`${DOMAIN}/images/banner.webp`} />
+
+        <meta property="og:locale" content="id_ID" />
+
+        {/* TWITTER CARD */}
+        <meta name="twitter:card" content="summary_large_image" />
+
+        <meta name="twitter:title" content={pageTitle} />
+
+        <meta name="twitter:description" content={pageDescription} />
+
+        <meta name="twitter:image" content={`${DOMAIN}/images/banner.webp`} />
+
+        {/* JSON-LD */}
         <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "EducationalOrganization",
-            name: `Bimbel & Les Privat Edumatrix ${kelurahan.kelurahan}`,
-            image: "https://supercampui.com/images/banner.webp",
-            url: `https://supercampui.com/bimbingan-privat-supercamp-utbk-snbt/${kelurahan.slug}`,
-            telephone: "+6282258689993",
-            address: {
-              "@type": "PostalAddress",
-              addressLocality: kelurahan.kelurahan,
-              addressCountry: "ID",
-            },
-            description: `Pusat Bimbel dan Les Privat terbaik di kelurahan ${kelurahan.kelurahan} untuk bimbingan intensif masuk Fakultas Kedokteran dan PTN unggulan.`,
-          })}
+          {JSON.stringify(structuredData)}
         </script>
       </Helmet>
-
       <JumbotronLps />
       <div className="parent-text-seo-lps">
         <h1 className="text-seo-lps">
-          Bimbel Les Privat & Supercamp UTBK SNBT di {kelurahan.kelurahan}
+          Bimbel Les Privat & Supercamp UTBK SNBT di {namaKelurahan}
         </h1>
         <p className="desk-seo-lps">
           Bimbel LPS adalah solusi terbaik untuk Anda yang membutuhkan layanan
