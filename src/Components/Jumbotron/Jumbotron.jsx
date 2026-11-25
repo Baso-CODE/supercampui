@@ -2,6 +2,9 @@
 import bgProfile from "../../assets/Supercamp/Background_supercamp_profile.webp";
 import jumbotron from "../../assets/Supercamp/Jumbotron.jpg";
 import mobJumbotron from "../../assets/Supercamp/MOB_JUMBOTRON.jpg";
+import bgIntensive from "../../assets/new/bg_intensive_utbk_snbt.webp";
+import bgOnlineClass from "../../assets/new/bg_online_class_utbk_snbt.webp";
+import bgSupercamp from "../../assets/new/bg_supercamp_utbk_snbt.webp";
 import titleJumbotron from "../../assets/new/bimbel_utbk_snbt_2025.webp";
 import "./Jumbotron.css";
 
@@ -70,15 +73,17 @@ const JumbotronLps = () => {
           </div>
         </div>
 
-        <div className="feature-card supercamp">
+        <div
+          className="feature-card supercamp"
+          style={{ backgroundImage: `url(${bgSupercamp})` }}>
           <div className="card-content">
-            <h2 className="title-fill-jumbotron">SUPERCAMP MATRIX 2026</h2>
+            <h2 className="title-fill-jumbotron">SUPERCAMP MATRIX 2027</h2>
             <p className="desk-fill-jumbotron desk-short">
               Program belajar berbasis karantina khusus kedokteran dan PTN
               Favorit.
             </p>
             <p className="desk-fill-jumbotron desk-long">
-              Supercamp Matrix 2026 adalah program belajar berbasis karantina
+              Supercamp Matrix 2027 adalah program belajar berbasis karantina
               yang dirancang khusus untuk mempercepat kemampuan siswa dalam
               memahami dan mengerjakan soal, sehingga meraih skor terbaik serta
               meningkatkan peluang lolos ke Fakultas Kedokteran dan Perguruan
@@ -87,7 +92,9 @@ const JumbotronLps = () => {
           </div>
         </div>
 
-        <div className="feature-card intensive">
+        <div
+          className="feature-card intensive"
+          style={{ backgroundImage: `url(${bgIntensive})` }}>
           <div className="card-content">
             <h2 className="title-fill-jumbotron">PRIVAT ONLINE & OFFLINE</h2>
             <p className="desk-fill-jumbotron desk-short">
@@ -99,6 +106,20 @@ const JumbotronLps = () => {
               fleksibel dan efektif. Program ini terdiri dari privat online dan
               offline dengan tutor berpengalaman, kelas kecil, bahan ajar
               lengkap, dan dukungan teknologi.
+            </p>
+          </div>
+        </div>
+        <div
+          className="feature-card intensive"
+          style={{ backgroundImage: `url(${bgOnlineClass})` }}>
+          <div className="card-content">
+            <h2 className="title-fill-jumbotron">Online Class</h2>
+            <p className="desk-fill-jumbotron desk-short">
+              Program intensif dengan tutor berpengalaman dan waktu fleksibel.
+            </p>
+            <p className="desk-fill-jumbotron desk-long">
+              Program intensif persiapan UTBK SNBT dengan sistem kelas online
+              interaktif melalui Zoom Maksimal 20 siswa per kelas.
             </p>
           </div>
         </div>
