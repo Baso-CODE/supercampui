@@ -131,7 +131,7 @@ const HalamanKotaLps = () => {
             <h1 className="text-seo-lps">
               Bimbel UTBK SNBT di{" "}
               <span className="highlight-city">{namaKota}</span> - Les Privat &
-              Supercamp PTN Kedokteran 2026
+              Supercamp PTN Kedokteran 2027
             </h1>
           </div>
 

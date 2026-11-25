@@ -16,7 +16,7 @@ const JumbotronLps = () => {
         <source media="(max-width: 896px)" srcSet={mobJumbotron} />
         <img
           src={jumbotron}
-          alt="Program bimbel masuk PTN 2026 untuk persiapan UTBK SNBT dan Kedokteran melalui Supercamp Matrix"
+          alt="Program bimbel masuk PTN 2027 untuk persiapan UTBK SNBT dan Kedokteran melalui Supercamp Matrix"
           className="jumbotron-main"
           loading="eager"
           fetchpriority="high"
@@ -29,14 +29,14 @@ const JumbotronLps = () => {
         <div className="parent-main-title-jumbotron">
           <img
             src={titleJumbotron}
-            alt="Bimbel UTBK SNBT 2026 program intensif masuk Kedokteran dan PTN favorit"
+            alt="Bimbel UTBK SNBT 2027 program intensif masuk Kedokteran dan PTN favorit"
             className="main-title-jumbotron"
             loading="eager"
           />
 
           <div className="parent-teks-top-jumbotron">
             <p className="teks-top-jumbotron">
-              <strong>Bimbel Masuk PTN 2026</strong> — Persiapan Intensif Lolos
+              <strong>Bimbel Masuk PTN 2027</strong> — Persiapan Intensif Lolos
               <span className="text-highlight">
                 {" "}
                 Kedokteran UI, UGM, ITB, dan UNAIR
