@@ -39,7 +39,7 @@ const JumbotronLps = () => {
               <strong>Bimbel Masuk PTN 2027</strong> — Persiapan Intensif Lolos
               <span className="text-highlight">
                 {" "}
-                Kedokteran UI, UGM, ITB, dan UNAIR
+                Kedokteran UI, UGM, UNPAD, dan UNAIR
               </span>
               . Tersedia Program Khusus{" "}
               <span className="text-tag">SIMAK UI</span>,
